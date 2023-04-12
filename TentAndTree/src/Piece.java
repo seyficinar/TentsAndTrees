@@ -18,6 +18,22 @@ public class Piece {
 
 	}
 
+	public boolean isTree() {
+		return isTree;
+	}
+
+	public void setTree(boolean isTree) {
+		this.isTree = isTree;
+	}
+
+	public Piece getTent() {
+		return tent;
+	}
+
+	public void setTent(Piece tent) {
+		this.tent = tent;
+	}
+
 	// Getters and Setters
 	public char getType() {
 
