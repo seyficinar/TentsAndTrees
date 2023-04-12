@@ -5,6 +5,9 @@ public class Piece {
 
 	char type; // (T, X or O)
 	Piece next; // to access other pieces
+	boolean isTree; //Checks whether it is tree or not
+	Piece tent; //if isTree true, piece should have one tent
+	
 
 	// Coordinate values of pieces
 	int cordX;
@@ -46,6 +49,16 @@ public class Piece {
 
 	public void setCordY(int cordY) {
 
+	}
+	
+	//Returns the number of tent a tree has
+	public int numOfTent() {
+		
+	}
+	
+	//Returns true, if there is no tent around a tent
+	public boolean checkTent() {
+		
 	}
 
 }

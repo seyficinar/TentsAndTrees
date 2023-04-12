@@ -29,5 +29,15 @@ public class Queue {
     public Piece dequeue(){
         
     }
+    
+    //Turns possible empty places to tents (O -> X)
+    public void possibleTents() {
+    	
+    }
+    
+    //Deletes the extra tents from queue
+    public void minimizedTents() {
+    	
+    }
 
 }

@@ -2,8 +2,24 @@
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+
+
+		//Get the input with scanner
+		
+		
+		//Creating the queue, and placing the pieces of puzzle into the queue
+		
+		
+		//Calling possibleTents()
+		
+		//Calling minimizedTents()
+		
+		
+		
+		
 
 	}
+	
+	
 
 }
