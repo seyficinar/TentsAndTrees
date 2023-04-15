@@ -1,43 +1,31 @@
-
 public class Queue {
-	
-	Piece first;
-	Piece last;
-	
-	
-	
-	
-	
-	
-	
-	//Constructor
-    public PieceQueue() {
+
+    private Element array[];
+
+    private int first;
+
+    private int last;
+
+    private int N;
+
+    public Queue(int N){
+       
+    }
+
+    boolean isFull(){
+       
+    }
+
+    boolean isEmpty(){
         
     }
-    
-    //Returns false if queue is not empty, otherwise if it is empty
-    public boolean isEmpty(){
+
+    void enqueue(Element element){
         
     }
-    
-    //New piece added to queue
-    public void enqueue(Piece newPiece) {
+
+    Element dequeue(){
         
-    }
-    
-    //Deletes the puzzle from queue
-    public Piece dequeue(){
-        
-    }
-    
-    //Turns possible empty places to tents (O -> X)
-    public void possibleTents() {
-    	
-    }
-    
-    //Deletes the extra tents from queue
-    public void minimizedTents() {
-    	
     }
 
 }

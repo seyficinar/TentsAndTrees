@@ -8,10 +8,16 @@ public class Piece {
 	boolean isTree; //Checks whether it is tree or not
 	Piece tent; //if isTree true, piece should have one tent
 	
+	public Coordinates[] getCord() {
+		return cord;
+	}
 
-	// Coordinate values of pieces
-	int cordX;
-	int cordY;
+	public void setCord(Coordinates[] cord) {
+		this.cord = cord;
+	}
+
+	Coordinates[] cord; //Possible coordinates of tents of a tree if piece is tree
+	
 	
 	//Constructor
 	public Piece(char type, Piece next, int cordX, int cordY) {
@@ -19,11 +25,11 @@ public class Piece {
 	}
 
 	public boolean isTree() {
-		return isTree;
+		
 	}
 
 	public void setTree(boolean isTree) {
-		this.isTree = isTree;
+		
 	}
 
 	public Piece getTent() {
