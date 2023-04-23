@@ -31,12 +31,7 @@ public class Main {
 
 	}
 
-	
-
 	public static char[][] solution(char[][] puzzle) {
-		double depth = numOfTrees(puzzle);
-		depth = Math.pow(4, depth);
-		
 
 		// Assumption trees can not be horizontally or vertically next to each other
 		// Creating an ArrayList and adding possible coordinates of tents to this list
@@ -51,25 +46,25 @@ public class Main {
 
 					if (i > 0) {
 						Coordinates cord = new Coordinates(i - 1, j);
-						cord.cordOfTree = new Coordinates(i,j);
+						cord.cordOfTree = new Coordinates(i, j);
 						cordsOfTents.add(cord);
 
 					}
 					if (i < size - 1) {
 						Coordinates cord = new Coordinates(i + 1, j);
-						cord.cordOfTree = new Coordinates(i,j);
+						cord.cordOfTree = new Coordinates(i, j);
 						cordsOfTents.add(cord);
 
 					}
 					if (j > 0) {
 						Coordinates cord = new Coordinates(i, j - 1);
-						cord.cordOfTree = new Coordinates(i,j);
+						cord.cordOfTree = new Coordinates(i, j);
 						cordsOfTents.add(cord);
 
 					}
 					if (j < size - 1) {
 						Coordinates cord = new Coordinates(i, j + 1);
-						cord.cordOfTree = new Coordinates(i,j);
+						cord.cordOfTree = new Coordinates(i, j);
 						cordsOfTents.add(cord);
 
 					}
@@ -78,7 +73,13 @@ public class Main {
 
 			}
 		}
-		cordsOfTents = removeDuplicates(cordsOfTents);
+		int num = numOfTrees(puzzle);
+		int depth = cordsOfTents.size();
+		int sum = 0;
+		for (int i = 0; i < num; i++) {
+			sum += Math.pow(depth, i + 1);
+		}
+
 		for (Coordinates c : cordsOfTents) {
 			System.out.println(c.getX() + ", " + c.getY());
 		}
@@ -89,8 +90,8 @@ public class Main {
 		s.cords = q;
 		k.enqueue(new Element(s));
 		int count = 0;
-		
-		while (!k.isEmpty() && count < depth*1000) {
+
+		while (!k.isEmpty() && count < sum) {
 			count++;
 			s = k.dequeue().getData();
 			char[][] temp = new char[size][size];
@@ -104,27 +105,28 @@ public class Main {
 				for (Coordinates c : s.cords) {
 					temp[c.getX()][c.getY()] = 'X';
 				}
-			}
-
-			if (check(temp)) {
-				return temp;
+				if (check(temp) && checkTents(s.cords)) {
+					return temp;
+				}
 			}
 
 			for (Coordinates c : cordsOfTents) {
 				ArrayList<Coordinates> tempList = new ArrayList<Coordinates>();
 				for (Coordinates w : s.cords) {
-					
+
 					tempList.add(w);
 				}
-				
-				if (checkTheTrees(tempList, c)) {
-					tempList.add(c);
-				}
+				int x = c.getX();
+				int y = c.getY();
+				int x1 = c.getCordOfTree().getX();
+				int y1 = c.getCordOfTree().getY();
+				tempList.add(new Coordinates(x, y, x1, y1));
+				tempList = removeExactDuplicates(tempList);
 
-//				for (Coordinates k1 : tempList) {
-//					System.out.print("(" + k1.getX() + ", " + k1.getY() + ") ");
-//				}
-//				System.out.println();
+				for (Coordinates k1 : tempList) {
+					System.out.print("(" + k1.getX() + ", " + k1.getY() + ") ");
+				}
+				System.out.println();
 				Element child = new Element(new State(tempList));
 				k.enqueue(child);
 			}
@@ -170,6 +172,7 @@ public class Main {
 
 	// Checks whether the puzzle passes the constraints
 	public static boolean check(char[][] puzzle) {
+
 		if (numOfTents(puzzle) != numOfTrees(puzzle)) {
 
 			return false;
@@ -178,7 +181,7 @@ public class Main {
 			return false;
 		}
 		int length = puzzle.length;
-
+		int count = 0;
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
 				char p = puzzle[i][j];
@@ -211,6 +214,7 @@ public class Main {
 				}
 
 				if (p == 'X') {
+					count++;
 
 					if (i > 0) {
 						if (puzzle[i - 1][j] == 'X') {
@@ -255,6 +259,9 @@ public class Main {
 
 				}
 			}
+
+			// Checks the situation two or more tree is connected with the same tent
+
 		}
 
 		return true;
@@ -275,33 +282,56 @@ public class Main {
 		}
 
 	}
-	
+
 	public static boolean contains(Coordinates c, ArrayList<Coordinates> list) {
-		for(Coordinates k : list) {
-			if(c.getX() == k.getX() && c.getY()== k.getY()) {
+		for (Coordinates k : list) {
+			if (c.getX() == k.getX() && c.getY() == k.getY()) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public static boolean contains(ArrayList<Coordinates> list1, ArrayList<Coordinates> list2) {
-		for(Coordinates c : list1) {
-			if(!contains(c, list2)) {
+		for (Coordinates c : list1) {
+			if (!contains(c, list2)) {
 				return false;
 			}
 		}
-		for(Coordinates c : list2) {
-			if(!contains(c, list1)) {
+		for (Coordinates c : list2) {
+			if (!contains(c, list1)) {
 				return false;
 			}
 		}
-		
+
 		return true;
-		
+
 	}
-	
+
+	public static ArrayList<Coordinates> removeExactDuplicates(ArrayList<Coordinates> list) {
+		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
+
+		for (int i = 0; i < list.size(); i++) {
+			boolean isDuplicate = false;
+
+			for (int j = i + 1; j < list.size(); j++) {
+				if (list.get(i).getX() == list.get(j).getX() && list.get(i).getY() == list.get(j).getY()
+						&& list.get(i).getCordOfTree().getX() == list.get(j).getCordOfTree().getX()
+						&& list.get(i).getCordOfTree().getY() == list.get(j).getCordOfTree().getY()) {
+					isDuplicate = true;
+					break;
+				}
+			}
+
+			if (!isDuplicate) {
+				result.add(list.get(i));
+			}
+		}
+
+		return result;
+	}
+
 	public static ArrayList<Coordinates> removeDuplicates(ArrayList<Coordinates> list) {
 		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
 
@@ -322,16 +352,25 @@ public class Main {
 
 		return result;
 	}
-	
-	public static boolean checkTheTrees(ArrayList <Coordinates> list, Coordinates c) {
-		 
-		for(Coordinates c2 : list) {
-			if(c2.cordOfTree.getX()==c.cordOfTree.getX() && c2.cordOfTree.getY()==c.cordOfTree.getY()) {
-				return false;
+
+	// Checks whether one tree has more than on tents or not
+	public static boolean checkTents(ArrayList<Coordinates> list) {
+		list = removeDuplicates(list);
+
+		for (int i = 0; i < list.size(); i++) {
+			for (int j = i + 1; j < list.size(); j++) {
+				int x1 = list.get(i).getCordOfTree().getX();
+				int x2 = list.get(j).getCordOfTree().getX();
+				int y1 = list.get(i).getCordOfTree().getY();
+				int y2 = list.get(j).getCordOfTree().getY();
+				if (x1 == x2 && y1 == y2) {
+					return false;
+				}
 			}
 		}
-		
+
 		return true;
+
 	}
 
 }
