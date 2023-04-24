@@ -1,4 +1,6 @@
 public class Queue {
+	
+	//Array implementation of queue as in dartsGame
 
 	private Element[] array;
 

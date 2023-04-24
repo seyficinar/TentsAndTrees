@@ -6,7 +6,8 @@ public class Coordinates {
 	int y;
 	// Coordinates of trees belongs to tents
 	Coordinates cordOfTree;
-
+	
+	//Constructors
 	public Coordinates(int x, int y) {
 		super();
 		this.x = x;
@@ -35,7 +36,8 @@ public class Coordinates {
 	public void setY(int y) {
 		this.y = y;
 	}
-
+	
+	
 	public Coordinates getCordOfTree() {
 		return cordOfTree;
 	}

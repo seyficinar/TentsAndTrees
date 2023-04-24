@@ -6,6 +6,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
+		// Get the input from the user
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter the size of matrix nxn: ");
 		int size = sc.nextInt();
@@ -26,18 +27,23 @@ public class Main {
 			}
 		}
 
+		// Print the solution if exist
 		char[][] sol = solution(puzzle);
 		print(sol);
 
 	}
 
+	// Method that returns the solution whenever finds one. If no solution returns
+	// null
 	public static char[][] solution(char[][] puzzle) {
 
 		// Assumption trees can not be horizontally or vertically next to each other
 		// Creating an ArrayList and adding possible coordinates of tents to this list
 		ArrayList<Coordinates> cordsOfTents = new ArrayList<Coordinates>();
+
 		int size = puzzle[0].length;
 
+		// Recording the coordinates of possbile tents
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				char c = puzzle[i][j];
@@ -73,25 +79,30 @@ public class Main {
 
 			}
 		}
+		// Finds the number for maximum number of loop
 		int num = numOfTrees(puzzle);
 		int depth = cordsOfTents.size();
 		int sum = 0;
 		for (int i = 0; i < num; i++) {
 			sum += Math.pow(depth, i + 1);
 		}
-
-		for (Coordinates c : cordsOfTents) {
-			System.out.println(c.getX() + ", " + c.getY());
-		}
-
-		Queue k = new Queue(10000);
+		// Print for debugging
+//		for (Coordinates c : cordsOfTents) {
+//			System.out.println(c.getX() + ", " + c.getY());
+//		}
+		// Since it is a array implementation of queue, maximum size of array my
+		// hardware allows is around Math.pow(10,9)
+		// Because of this issue, the code wont be able to calculate the solution for a
+		// large inputs according to hardware
+		// But size of smaller 6x6 it works perfectly
+		Queue k = new Queue((int) Math.pow(10, 9));
 		State s = new State();
 		ArrayList<Coordinates> q = new ArrayList<>();
 		s.cords = q;
 		k.enqueue(new Element(s));
 		int count = 0;
 
-		while (!k.isEmpty() && count < sum) {
+		while (!k.isEmpty() && count < sum * 1000) {
 			count++;
 			s = k.dequeue().getData();
 			char[][] temp = new char[size][size];
@@ -105,8 +116,10 @@ public class Main {
 				for (Coordinates c : s.cords) {
 					temp[c.getX()][c.getY()] = 'X';
 				}
-				if (check(temp) && checkTents(s.cords)) {
-					return temp;
+				if (numOfTents(temp) == numOfTrees(temp)) {
+					if (check(temp) && checkTents(s.cords)) {
+						return temp;
+					}
 				}
 			}
 
@@ -123,10 +136,11 @@ public class Main {
 				tempList.add(new Coordinates(x, y, x1, y1));
 				tempList = removeExactDuplicates(tempList);
 
-				for (Coordinates k1 : tempList) {
-					System.out.print("(" + k1.getX() + ", " + k1.getY() + ") ");
-				}
-				System.out.println();
+				// Print for debugging
+//				for (Coordinates k1 : tempList) {
+//					System.out.print("(" + k1.getX() + ", " + k1.getY() + ") ");
+//				}
+//				System.out.println();
 				Element child = new Element(new State(tempList));
 				k.enqueue(child);
 			}
@@ -173,15 +187,11 @@ public class Main {
 	// Checks whether the puzzle passes the constraints
 	public static boolean check(char[][] puzzle) {
 
-		if (numOfTents(puzzle) != numOfTrees(puzzle)) {
-
-			return false;
-		}
 		if (puzzle == null) {
 			return false;
 		}
 		int length = puzzle.length;
-		int count = 0;
+
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
 				char p = puzzle[i][j];
@@ -214,7 +224,6 @@ public class Main {
 				}
 
 				if (p == 'X') {
-					count++;
 
 					if (i > 0) {
 						if (puzzle[i - 1][j] == 'X') {
@@ -283,32 +292,7 @@ public class Main {
 
 	}
 
-	public static boolean contains(Coordinates c, ArrayList<Coordinates> list) {
-		for (Coordinates k : list) {
-			if (c.getX() == k.getX() && c.getY() == k.getY()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public static boolean contains(ArrayList<Coordinates> list1, ArrayList<Coordinates> list2) {
-		for (Coordinates c : list1) {
-			if (!contains(c, list2)) {
-				return false;
-			}
-		}
-		for (Coordinates c : list2) {
-			if (!contains(c, list1)) {
-				return false;
-			}
-		}
-
-		return true;
-
-	}
-
+	// Removes the excatDuplicate coordinates from the list
 	public static ArrayList<Coordinates> removeExactDuplicates(ArrayList<Coordinates> list) {
 		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
 
@@ -332,6 +316,7 @@ public class Main {
 		return result;
 	}
 
+	// Removes the same coordinates but doent check which tree they belong
 	public static ArrayList<Coordinates> removeDuplicates(ArrayList<Coordinates> list) {
 		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
 
@@ -355,7 +340,7 @@ public class Main {
 
 	// Checks whether one tree has more than on tents or not
 	public static boolean checkTents(ArrayList<Coordinates> list) {
-		list = removeDuplicates(list);
+		list = removeExactDuplicates(list);
 
 		for (int i = 0; i < list.size(); i++) {
 			for (int j = i + 1; j < list.size(); j++) {
