@@ -95,14 +95,14 @@ public class Main {
 		// Because of this issue, the code wont be able to calculate the solution for a
 		// large inputs according to hardware
 		// But size of smaller 6x6 it works perfectly
-		Queue k = new Queue((int) Math.pow(10, 9));
+		Queue k = new Queue();
 		State s = new State();
 		ArrayList<Coordinates> q = new ArrayList<>();
 		s.cords = q;
 		k.enqueue(new Element(s));
 		int count = 0;
-
-		while (!k.isEmpty() && count < sum * 1000) {
+		int count2 = 0;
+		while (!k.isEmpty() && count < Integer.MAX_VALUE) {
 			count++;
 			s = k.dequeue().getData();
 			char[][] temp = new char[size][size];
