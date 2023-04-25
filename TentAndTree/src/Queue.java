@@ -1,45 +1,51 @@
 public class Queue {
-	
-	//Array implementation of queue as in dartsGame
 
-	private Element[] array;
+    private Node front;
+    private Node rear;
 
-    private int first;
+    //Inner class to represent a Node in LinkedList
+    private class Node {
+        private Element data;
+        private Node next;
 
-    private int last;
-
-    private int N;
-
-    public Queue(int N){
-    	this.N = N;
-        array = new Element[N];
-        first = 0;
-        last = 0;
-        
-    }
-
-    boolean isFull(){
-        return (last + 1) % N == first;
-    }
-
-    boolean isEmpty(){
-        return first == last;
-    }
-
-    void enqueue(Element element){
-        if (!isFull()){
-            array[last] = element;
-            last = (last + 1) % N;
+        public Node(Element data) {
+            this.data = data;
+            this.next = null;
         }
     }
 
-    Element dequeue(){
-        if (!isEmpty()){
-            Element tmp = array[first];
-            first = (first + 1) % N;
-            return tmp;
-        }
-        return null;
+    public Queue() {
+        this.front = null;
+        this.rear = null;
     }
 
+    boolean isEmpty() {
+        return front == null;
+    }
+
+    void enqueue(Element element) {
+        Node newNode = new Node(element);
+
+        if (rear == null) {
+            front = newNode;
+            rear = newNode;
+        } else {
+            rear.next = newNode;
+            rear = newNode;
+        }
+    }
+
+    Element dequeue() {
+        Element dequeuedElement = null;
+
+        if (front != null) {
+            dequeuedElement = front.data;
+            front = front.next;
+
+            if (front == null) {
+                rear = null;
+            }
+        }
+        return dequeuedElement;
+    }
 }
