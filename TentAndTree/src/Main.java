@@ -1,4 +1,4 @@
-import java.awt.image.AbstractMultiResolutionImage;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -90,20 +90,16 @@ public class Main {
 //		for (Coordinates c : cordsOfTents) {
 //			System.out.println(c.getX() + ", " + c.getY());
 //		}
-		// Since it is a array implementation of queue, maximum size of array my
-		// hardware allows is around Math.pow(10,9)
-		// Because of this issue, the code wont be able to calculate the solution for a
-		// large inputs according to hardware
-		// But size of smaller 6x6 it works perfectly
+		
 		Queue k = new Queue();
 		State s = new State();
 		ArrayList<Coordinates> q = new ArrayList<>();
 		s.cords = q;
 		k.enqueue(new Element(s));
-		int count = 0;
-		int count2 = 0;
-		while (!k.isEmpty() && count < Integer.MAX_VALUE) {
-			count++;
+		
+
+		while (!k.isEmpty()) {
+			
 			s = k.dequeue().getData();
 			char[][] temp = new char[size][size];
 			for (int i = 0; i < size; i++) {
@@ -113,37 +109,38 @@ public class Main {
 				}
 			}
 			if (s.cords != null) {
+				int numOfTents = 0;
 				for (Coordinates c : s.cords) {
+					numOfTents++;
 					temp[c.getX()][c.getY()] = 'X';
 				}
-				if (numOfTents(temp) == numOfTrees(temp)) {
-					if (check(temp) && checkTents(s.cords)) {
-						return temp;
-					}
+				if (num == numOfTents) {
+
+					return temp;
+
 				}
 			}
 
-			for (Coordinates c : cordsOfTents) {
-				ArrayList<Coordinates> tempList = new ArrayList<Coordinates>();
-				for (Coordinates w : s.cords) {
-
-					tempList.add(w);
-				}
-				int x = c.getX();
-				int y = c.getY();
-				int x1 = c.getCordOfTree().getX();
-				int y1 = c.getCordOfTree().getY();
-				tempList.add(new Coordinates(x, y, x1, y1));
-				tempList = removeExactDuplicates(tempList);
-
-				// Print for debugging
-//				for (Coordinates k1 : tempList) {
-//					System.out.print("(" + k1.getX() + ", " + k1.getY() + ") ");
-//				}
-//				System.out.println();
-				Element child = new Element(new State(tempList));
-				k.enqueue(child);
-			}
+			 for (Coordinates c : cordsOfTents) {
+			        // Create a new instance of ArrayList<Coordinates> for each iteration
+			        ArrayList<Coordinates> tempList = new ArrayList<Coordinates>(s.cords);
+			        int x = c.getX();
+			        int y = c.getY();
+			        int x1 = c.getCordOfTree().getX();
+			        int y1 = c.getCordOfTree().getY();
+			        Coordinates toAdd = new Coordinates(x, y, x1, y1);
+			        if (tempList.size() < num + 1 && checkCords(toAdd, tempList)) {
+			            tempList.add(toAdd);
+			            State newState = new State();
+			            newState.cords = tempList;
+			            for(Coordinates c2 : tempList){
+			            	System.out.print(c2.getX() + ", "+c2.getY()+ " ");
+			            	
+			            }
+			            System.out.println();
+			            k.enqueue(new Element(newState));
+			        }
+			    }
 
 		}
 
@@ -356,6 +353,30 @@ public class Main {
 
 		return true;
 
+	}
+	//Check constraints
+	public static boolean checkCords(Coordinates c, ArrayList<Coordinates> list) {
+		for (Coordinates c2 : list) {
+			if ((c2.getX() == c.getX() && c2.getY() == c.getY())
+					|| (c2.getCordOfTree().getX() == c.getCordOfTree().getX()
+							&& c2.getCordOfTree().getY() == c.getCordOfTree().getY())) {
+				return false;
+			}
+			
+			//Checks adjacent tents
+			int x1 = c2.getX();
+			int y1 = c2.getY();
+			int x2 = c.getX();
+			int y2 = c.getY();
+			if (Math.abs(x1 - x2) < 2 && Math.abs(y1 - y2) < 2) {
+
+				return false;
+
+			}
+
+		}
+
+		return true;
 	}
 
 }
