@@ -46,4 +46,9 @@ public class Coordinates {
 		this.cordOfTree = cordOfTree;
 	}
 
+	public Coordinates get(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
